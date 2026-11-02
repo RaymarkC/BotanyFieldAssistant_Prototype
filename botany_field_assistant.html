@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Botany Field Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf9f6;--card:#fff;--ink:#1c1f1d;--mut:#6b716d;--line:#e8e6e0;--g:#16a34a;--gd:#0f7a37;--gl:#e6f6ec;--amber:#fdf0c4;--amberi:#8a5a00;--chip:#f0eee8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141714;--card:#1c211d;--ink:#eef1ee;--mut:#9aa29c;--line:#2c332e;--g:#3ddc7a;--gd:#6be39a;--gl:#173626;--amber:#3a2f10;--amberi:#f2c660;--chip:#262c27}}
+:root[data-theme="dark"]{--bg:#141714;--card:#1c211d;--ink:#eef1ee;--mut:#9aa29c;--line:#2c332e;--g:#3ddc7a;--gd:#6be39a;--gl:#173626;--amber:#3a2f10;--amberi:#f2c660;--chip:#262c27}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;display:flex;min-height:100vh}
+nav{width:88px;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 0;position:sticky;top:0;height:100vh;background:var(--card);z-index:10}
+.logo{width:44px;height:44px;border-radius:12px;background:#1c1f1d;display:grid;place-items:center;margin-bottom:14px}
+nav button{width:48px;height:48px;border:0;background:none;border-radius:12px;cursor:pointer;color:var(--mut);position:relative;display:grid;place-items:center}
+nav button:hover{background:var(--chip)}
+nav button.on{color:var(--g)}
+nav button.on::before{content:"";position:absolute;left:-20px;top:10px;bottom:10px;width:3px;background:var(--g);border-radius:2px}
+nav svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+main{flex:1;min-width:0;padding:32px 40px 60px;max-width:1280px}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:400;margin:0}
+h1{font-size:44px;line-height:1.1}
+.sub{color:var(--mut);max-width:620px;margin:8px 0 28px;font-size:17px}
+.sci{font-family:'Playfair Display',Georgia,serif;font-style:italic}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:24px}
+.view{position:relative;height:380px;border-radius:14px;overflow:hidden;margin-top:18px;display:grid;place-items:center;background-size:cover;background-position:center;transition:background-image 0.3s ease}
+.view::after{content:"";position:absolute;inset:26px;border:2px dashed rgba(255,255,255,.8);border-radius:8px;pointer-events:none;box-shadow:inset 0 0 0 2000px rgba(0,0,0,0.2)}
+.beam{position:absolute;left:0;right:0;height:3px;background:#7dffa8;box-shadow:0 0 18px 6px rgba(125,255,168,.8);top:0;display:none;z-index:5}
+.scanning .beam{display:block;animation:sweep 1.4s ease-in-out infinite alternate}
+@keyframes sweep{from{top:0}to{top:100%}}
+@media (prefers-reduced-motion:reduce){.scanning .beam{animation:none;top:50%}}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--gl);color:var(--gd);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:500}
+.badge i{width:7px;height:7px;border-radius:50%;background:var(--g)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn{border:0;border-radius:12px;padding:11px 18px;font:500 15px Inter,sans-serif;cursor:pointer;background:var(--g);color:#052e14;transition:all 0.2s}
+.btn:hover{filter:brightness(1.05)}
+.btn.alt{background:var(--chip);color:var(--ink)}
+.btn.alt:hover{background:var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.btns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.tax{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-top:12px}
+.tax small,.lab{color:var(--mut);font-size:13px}
+.tax b{display:block;font-weight:600}
+.tax .i{width:40px;height:40px;border-radius:10px;background:var(--gl);display:grid;place-items:center}
+.thumbs{display:flex;gap:10px;margin-top:10px;overflow-x:auto;padding-bottom:6px}
+.thumbs div{flex:0 0 96px;height:96px;border-radius:12px;background-size:cover;background-position:center;border:1px solid var(--line);box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.match{font-size:14px;color:var(--mut)}
+.match b{color:var(--gd)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;text-align:left;padding:0;font:inherit;color:inherit;transition:transform 0.2s, border-color 0.2s}
+.card:hover{border-color:var(--g);transform:translateY(-2px)}
+.card .im{height:190px;position:relative;background-size:cover;background-position:center}
+.card .tag{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.92);color:#0f5a2a;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+.card .bd{padding:16px 20px 18px}
+.card .fam{color:var(--mut);font-size:13px}
+.card h3{font-size:20px;font-style:italic;margin:2px 0 14px}
+.card .ft{border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;color:var(--mut);font-size:13px}
+.tools{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+input[type=search]{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--g);color:#052e14;border-color:var(--g)}
+.wb{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px;align-items:start}
+.item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;border:1px solid transparent;background:none;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.item:hover{background:var(--chip)}
+.item.on{background:var(--gl);border-color:var(--g)}
+.item .th{width:52px;height:52px;border-radius:10px;background-size:cover;background-position:center;flex:none;border:1px solid var(--line)}
+.item b{display:block;font-style:italic}
+.item small{color:var(--mut)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 26px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.stat b{font-size:22px;font-weight:500;display:block}
+.bar{height:8px;background:var(--chip);border-radius:6px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--g);border-radius:6px;transition:width .5s}
+.sec{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--mut);margin:22px 0 10px}
+.env{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.note{background:var(--amber);color:var(--amberi);border-radius:14px;padding:14px 18px;margin-top:22px;font-size:14px}
+.note b{display:block;margin-bottom:2px}
+.hero{height:250px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:20px;border:1px solid var(--line);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:12px;color:var(--mut);letter-spacing:.06em;padding:16px 24px;font-weight:600}
+.tbl td{padding:18px 24px;border-top:1px solid var(--line)}
+.st{border-radius:999px;padding:3px 12px;font-size:13px}
+.s-Identified{background:var(--gl);color:var(--gd)}.s-Cataloged{background:var(--chip)}.s-InProgress{background:var(--amber);color:var(--amberi)}
+.wrap{overflow-x:auto}input,select{font-size:16px}.btn{min-height:44px}.tbl{min-width:560px}
+.disc{margin-top:36px;color:var(--mut);font-size:13px;font-style:italic}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1c1f1d;color:#fff;padding:12px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.toast.show{opacity:1}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:24px;width:min(420px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+dialog label{display:block;margin:12px 0 4px;font-size:13px;color:var(--mut)}
+dialog input,dialog select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+@media(max-width:860px){
+ body{flex-direction:column-reverse}
+ nav{width:100%;height:auto;flex-direction:row;justify-content:space-around;position:sticky;bottom:0;top:auto;border-right:0;border-top:1px solid var(--line);padding:8px 0}
+ .logo{display:none}nav button.on::before{display:none}
+ main{padding:24px 18px 40px}h1{font-size:34px}
+ .grid2,.wb{grid-template-columns:1fr}.view{height:280px}.env{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav aria-label="Main">
+ <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-13 15z" fill="#3ddc7a"/></svg></div>
+ <button data-go="scan" aria-label="Scan new plant"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1H4a1 1 0 01-1-1z"/></svg></button>
+ <button data-go="herbarium" aria-label="Herbarium collection"><svg viewBox="0 0 24 24"><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="15" y="4" width="6" height="5" rx="1"/><rect x="15" y="15" width="6" height="5" rx="1"/><path d="M7 11.5h4V6.5h4M11 11.5v6h4"/></svg></button>
+ <button data-go="workbench" aria-label="Botanical workbench"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/></svg></button>
+ <button data-go="history" aria-label="Activity history"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.5M3 4v4h4M12 7v5l3 2"/></svg></button>
+</nav>
+<main id="app"></main>
+<div class="toast" id="toast" role="status"></div>
+<dialog id="dlg">
+ <h3 style="font-size:24px">Add specimen</h3>
+ <label for="nSci">Scientific name</label><input id="nSci" placeholder="e.g. Ocimum basilicum">
+ <label for="nFam">Family</label><input id="nFam" placeholder="e.g. Lamiaceae">
+ <label for="nHab">Habitat</label>
+ <select id="nHab"><option>Tropical Rainforest</option><option>Mediterranean</option><option>Temperate</option><option>Garden</option></select>
+ <label for="nImg">Photo</label><input id="nImg" type="file" accept="image/*">
+ <div class="btns"><button class="btn" id="dOk">Save specimen</button><button class="btn alt" id="dNo">Cancel</button></div>
+</dialog>
+
+<script>
+// Specimen database with high-resolution realistic photography URLs
+const P=[
+{id:'mon',sci:'Monstera deliciosa',com:'Swiss cheese plant',fam:'Araceae',hab:'Tropical Rainforest',date:'Oct 2023',img:'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=800&auto=format&fit=crop',leaf:'30 - 90 cm',habit:'Hemiepiphytic climber',dna:60,ev:'Safety hazard',note:'Calcium oxalate crystals burn the mouth and cause swelling if eaten.',t:[26,70,75],logged:1},
+{id:'lav',sci:'Lavandula angustifolia',com:'English lavender',fam:'Lamiaceae',hab:'Mediterranean',date:'Sep 2023',img:'https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?q=80&w=800&auto=format&fit=crop',leaf:'2 - 6 cm',habit:'Shrub',dna:100,ev:'Traditional use',note:'EMA: used for mild stress and sleep; clinical evidence is insufficient.',t:[22,90,40],logged:1},
+{id:'ros',sci:'Rosa gallica',com:'French rose',fam:'Rosaceae',hab:'Central Europe',date:'Aug 2023',img:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop',leaf:'4 - 10 cm',habit:'Deciduous shrub',dna:35,ev:'Traditional use',note:'Petals are used traditionally; no strong clinical evidence for therapeutic use.',t:[18,80,55],logged:1},
+{id:'que',sci:'Quercus robur',com:'English oak',fam:'Fagaceae',hab:'Temperate',date:'Jul 2023',img:'https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=800&auto=format&fit=crop',leaf:'7 - 14 cm',habit:'Deciduous tree',dna:100,ev:'Limited evidence',note:'Bark has been used as an astringent; acorns can be toxic to livestock.',t:[15,75,60],logged:1},
+{id:'asp',sci:'Asplenium nidus',com:"Bird’s-nest fern",fam:'Aspleniaceae',hab:'Tropical Rainforest',date:'Oct 2023',img:'https://images.unsplash.com/photo-1596720426673-e4e14290f0cc?q=80&w=800&auto=format&fit=crop',leaf:'45 - 120 cm',habit:'Epiphytic',dna:85,ev:'No known hazard',note:'Generally regarded as non-toxic; young fronds are eaten in some regions.',t:[24,50,80],logged:1},
+{id:'ech',sci:'Echeveria elegans',com:'Mexican snowball',fam:'Crassulaceae',hab:'Garden',date:'Oct 2023',img:'https://images.unsplash.com/photo-1520302634845-a2c3668f4477?q=80&w=800&auto=format&fit=crop',leaf:'3 - 8 cm',habit:'Succulent rosette',dna:20,ev:'No known hazard',note:'Ornamental; no established health use.',t:[20,85,30],logged:1},
+{id:'alo',sci:'Aloe vera',com:'Aloe',fam:'Asphodelaceae',hab:'Garden',date:'Nov 2023',img:'https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?q=80&w=800&auto=format&fit=crop',leaf:'30 - 50 cm',habit:'Succulent',dna:0,ev:'Limited evidence',note:'Topical gel may help burns; oral latex causes cramps.',t:[27,90,35],logged:0},
+{id:'vit',sci:'Vitex negundo',com:'Lagundi',fam:'Lamiaceae',hab:'Tropical Rainforest',date:'Nov 2023',img:'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=800&auto=format&fit=crop',leaf:'4 - 9 cm',habit:'Shrub',dna:0,ev:'Traditional use + trials',note:'2020 review of 7 trials in children: no significant peak-flow gain.',t:[28,70,65],logged:0},
+{id:'cur',sci:'Curcuma longa',com:'Turmeric',fam:'Zingiberaceae',hab:'Tropical Rainforest',date:'Nov 2023',img:'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=800&auto=format&fit=crop',leaf:'30 - 90 cm',habit:'Rhizomatous herb',dna:0,ev:'Unproven',note:'NCCIH: not enough evidence; liver risk with supplements.',t:[27,60,70],logged:0}
+];
+
+const hist=[
+{a:'Field Scan',ic:'📷',s:'Asplenium nidus',st:'Identified',d:'Oct 24, 2023 · 14:32'},
+{a:'Added to Collection',ic:'➕',s:'Lavandula angustifolia',st:'Cataloged',d:'Oct 23, 2023 · 09:15'},
+{a:'DNA Analysis Started',ic:'🧬',s:'Rosa gallica',st:'In Progress',d:'Oct 22, 2023 · 16:45'}];
+let st={tab:'scan',cand:null,scanning:false,filter:'All',q:'',sel:'asp',wq:'',scanN:0};
+const $=s=>document.querySelector(s),art=(p)=>`background-image:url('${(p&&p.img)?p.img:'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=800&auto=format&fit=crop'}')`;
+function shrink(file,max=720){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>res({blob:b,url:c.toDataURL('image/jpeg',.8)}),'image/jpeg',.8)};im.onerror=rej;im.src=u})}
+async function identify(blob){try{const s=window.claude&&await claude.use('sample');if(!s)return null;const lim=await s.limits();if(!lim.images)return null;
+ const r=await s('Identify the plant in this photo. Reply with ONLY JSON, no markdown: {"sci":"Genus species","com":"common name","fam":"Family","confidence":0-100,"habit":"growth habit","leaf":"typical leaf length in cm","hab":"typical habitat","ev":"Safety hazard|Traditional use|Limited evidence|Unproven|No known hazard","note":"one cautious educational sentence on safety or health relevance, no doses"}. If no plant is visible reply {"error":"no plant"}.',{images:[blob],modelTier:'default',cache:false});
+ return JSON.parse(r.text.replace(/```json|```/g,'').trim())}catch(e){return null}}
+const save=()=>{try{const im={},lg={};P.forEach(p=>{if(p.id[0]!=='n'){if(p.img)im[p.id]=p.img;if(p.logged)lg[p.id]=1}});localStorage.setItem('bfa',JSON.stringify({u:P.filter(p=>p.id[0]==='n'),im,lg,h:hist.slice(0,40)}))}catch(e){toast('Storage full; photo may not persist across sessions.')}};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)};
+const now=()=>'Nov 2, 2026 · '+new Date().toTimeString().slice(0,5);
+const logged=()=>P.filter(p=>p.logged);
+const pend=()=>P.filter(p=>!p.logged);
+const disc='<p class="disc">Information only. It does not diagnose, treat or recommend doses. Consult a doctor or pharmacist.</p>';
+
+function go(t){st.tab=t;location.hash=t;render()}
+function render(){
+ document.querySelectorAll('nav [data-go]').forEach(b=>b.classList.toggle('on',b.dataset.go===st.tab));
+ $('#app').innerHTML=({scan,herbarium,workbench,history:histV})[st.tab]();
+ bind();window.scrollTo(0,0)
+}
+function scan(){
+ const p=st.cand,rec=logged().slice(-4).reverse();
+ const activeImg = st.photo ? st.photo : (p ? p.img : (pend()[0] ? pend()[0].img : P[0].img));
+ return `<h1>Scan New Plant</h1><p class="sub">Point your camera at a specimen. Our field assistant will identify it to species and log it into the herbarium collection.</p>
+ <div class="grid2"><section class="panel">
+  <div class="row"><div><h3 style="font-family:Inter;font-weight:600;font-size:18px">Live Field View</h3><span class="lab">AI-assisted identification · v2.4</span></div><span class="badge"><i></i>Camera active</span></div>
+  <div class="view ${st.scanning?'scanning':''}" style="background-image:url('${activeImg}')"><div class="beam"></div></div>
+  <div class="btns"><button class="btn" id="pick" ${st.scanning?'disabled':''}>${st.scanning?'Identifying…':'Take or upload photo'}</button><input type="file" id="photo" accept="image/*" hidden><button class="btn alt" id="doScan" ${st.scanning?'disabled':''}>Try sample scan</button>
+  ${p&&!st.scanning?`<button class="btn" id="doLog">Log to collection</button><button class="btn alt" id="doRetake">Retake photo</button>`:''}</div>
+ </section>
+ <section class="panel"><h3 style="font-size:24px;margin-bottom:6px">Taxonomy Exploration</h3>
+  ${p&&!st.scanning?`<p class="match">Suggested species: <b class="sci">${p.sci}</b> · <b>${p.conf!=null?p.conf:90+p.t[0]%7}% match</b></p>${p.demo?'<p class="lab">Sample match shown. Live identification isn’t available in this view.</p>':''}
+  ${[['Kingdom','Plantae'],['Family',p.fam],['Genus',p.sci.split(' ')[0]]].map(([k,v])=>`<div class="tax"><span class="i">🌿</span><div><small>${k}</small><b>${v}</b></div></div>`).join('')}
+  <div class="note"><b>${p.ev}</b>${p.note}</div>`:`<p class="lab">Press “Scan plant” to see the suggested species and its taxonomy here.</p>`}
+  <div class="sec" style="font-weight:500;letter-spacing:0">Recently scanned</div>
+  <div class="thumbs">${rec.map(r=>`<div style="${art(r)}" title="${r.sci}"></div>`).join('')}</div>
+ </section></div>${disc}`
+}
+function herbarium(){
+ const fams=['All',...new Set(logged().map(p=>p.hab))];
+ const list=logged().filter(p=>(st.filter==='All'||p.hab===st.filter)&&(p.sci+p.com+p.fam).toLowerCase().includes(st.q.toLowerCase()));
+ return `<h1>Herbarium Collection</h1><p class="sub">Browse and manage your digital catalog of botanical specimens from across the globe.</p>
+ <div class="tools"><input type="search" id="q" placeholder="Search species, families, or common names…" value="${st.q}" aria-label="Search"><button class="btn" id="add">Add specimen</button></div>
+ <div class="chips" style="margin-bottom:22px">${fams.map(f=>`<button class="chip ${f===st.filter?'on':''}" data-f="${f}">${f}</button>`).join('')}</div>
+ <div class="cards">${list.map(p=>`<button class="card" data-open="${p.id}"><div class="im" style="${art(p)}"><span class="tag">${p.com.split(' ').pop().toUpperCase()}</span></div>
+ <div class="bd"><div class="fam">${p.fam} Family</div><h3>${p.sci}</h3><div class="ft"><span>📍 ${p.hab}</span><span>${p.date}</span></div></div></button>`).join('')||'<p class="lab">No specimens match. Clear the search or add a new specimen.</p>'}</div>${disc}`
+}
+function workbench(){
+ const l=logged().filter(p=>(p.sci+p.com).toLowerCase().includes(st.wq.toLowerCase())),p=P.find(x=>x.id===st.sel&&x.logged)||l[0];
+ if(!p)return '<h1>Botanical Workbench</h1><p class="sub">No specimens yet. Scan a plant to start.</p>';
+ return `<h1>Botanical Workbench</h1><p class="sub">Analyze morphology, habitat and growing conditions for each specimen.</p>
+ <div class="wb"><section class="panel" style="padding:18px"><input type="search" id="wq" placeholder="Filter specimens…" value="${st.wq}" aria-label="Filter specimens" style="width:100%;margin-bottom:10px">
+ ${l.map(x=>`<button class="item ${x.id===p.id?'on':''}" data-sel="${x.id}"><span class="th" style="${art(x)}"></span><span><b>${x.sci}</b><small>Last updated: ${x.id==='asp'?'2h':x.id==='ech'?'1d':'3d'} ago</small></span></button>`).join('')}</section>
+ <section class="panel"><span class="badge">Active specimen</span><h2 class="sci" style="font-size:38px;margin-top:10px">${p.sci}</h2><div class="lab" style="font-size:17px">Common name: ${p.com}</div>
+ <div class="hero" style="${art(p)};margin-top:20px"></div>
+ <div class="sec">MORPHOLOGICAL DATA</div><div class="stats"><div class="stat"><span class="lab">Leaf length</span><b>${p.leaf}</b></div><div class="stat"><span class="lab">Growth habit</span><b>${p.habit}</b></div></div>
+ <div class="sec">ANALYSIS PROGRESS</div><div class="bar"><span style="width:${p.dna}%"></span></div>
+ <div class="row lab" style="margin-top:8px"><span>DNA sequencing</span><b style="color:var(--gd)">${p.dna}% complete</b></div>
+ <div class="sec">HABITAT CONDITIONS · ${p.hab}</div><div class="env">
+ ${[['Temperature',p.t[0]+' °C',p.t[0]*2.2],['Light',p.t[1]+'%',p.t[1]],['Humidity',p.t[2]+'%',p.t[2]]].map(([a,b,w])=>`<div class="stat"><span class="lab">${a}</span><b>${b}</b><div class="bar" style="margin-top:8px"><span style="width:${w}%"></span></div></div>`).join('')}</div>
+ <div class="note"><b>Evidence level: ${p.ev}</b>${p.note}</div>
+ <div class="btns"><button class="btn alt" id="dna">${p.dna>=100?'DNA sequencing complete':'Advance DNA sequencing'}</button><button class="btn alt" id="chg">Add or change photo</button><input type="file" id="wfile" accept="image/*" hidden><button class="btn alt" id="exp">Export record</button></div></section></div>${disc}`
+}
+function histV(){
+ return `<h1>Activity History</h1><p class="sub">A chronological record of your field scans, collection updates, and botanical discoveries.</p>
+ <div class="panel wrap" style="padding:0"><table class="tbl"><thead><tr><th>ACTIVITY</th><th>SPECIMEN</th><th>STATUS</th><th>DATE &amp; TIME</th></tr></thead><tbody>
+ ${hist.map(h=>`<tr><td>${h.ic} &nbsp;${h.a}</td><td class="sci" style="font-family:Inter;font-style:italic">${h.s}</td><td><span class="st s-${h.st.replace(' ','')}">${h.st}</span></td><td class="lab">${h.d}</td></tr>`).join('')}</tbody></table></div>${disc}`
+}
+function bind(){
+ const g=s=>document.querySelector(s);
+ g('#pick')&&(g('#pick').onclick=()=>g('#photo').click());
+ g('#photo')&&(g('#photo').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  st.scanning=true;st.cand=null;render();let im;
+  try{im=await shrink(f)}catch(x){st.scanning=false;st.photo=null;toast('Could not read image');render();return}
+  st.photo=im.url;render();
+  const j=await identify(im.blob);st.scanning=false;
+  if(j&&j.error){st.photo=null;toast('No plant found. Try a closer, well-lit photo.');render();return}
+  const f0=pend()[st.scanN++%Math.max(1,pend().length)]||P[0];
+  const b=j||{sci:f0.sci,com:f0.com,fam:f0.fam,hab:f0.hab,habit:f0.habit,leaf:f0.leaf,ev:f0.ev,note:f0.note};
+  st.cand={id:'n'+Date.now(),sci:b.sci||'Unknown species',com:b.com||'Unnamed',fam:b.fam||'Unknown',hab:b.hab||'Garden',date:'Nov 2026',img:im.url,leaf:b.leaf||'—',habit:b.habit||'Not recorded',dna:0,ev:b.ev||'Not yet reviewed',note:b.note||'Add expert verification.',t:[24,60,60],logged:0,conf:j&&typeof j.confidence==='number'?Math.round(j.confidence):null,demo:!j};
+  hist.unshift({a:'Field Scan',ic:'📷',s:st.cand.sci,st:'Identified',d:now()});render()});
+ g('#doScan')&&(g('#doScan').onclick=()=>{st.photo=null;
+  st.scanning=true;render();
+  setTimeout(()=>{const q=pend();st.cand=q[st.scanN%q.length];st.scanN++;st.scanning=false;
+   hist.unshift({a:'Field Scan',ic:'📷',s:st.cand.sci,st:'Identified',d:now()});render()},1400)});
+ g('#doLog')&&(g('#doLog').onclick=()=>{const p=st.cand;p.logged=1;if(!P.includes(p))P.push(p);hist.unshift({a:'Added to Collection',ic:'➕',s:p.sci,st:'Cataloged',d:now()});st.cand=null;st.photo=null;save();toast(p.sci+' logged to collection');render()});
+ g('#doRetake')&&(g('#doRetake').onclick=()=>{st.cand=null;st.photo=null;render()});
+ g('#q')&&(g('#q').oninput=e=>{st.q=e.target.value;const pos=e.target.selectionStart;render();const i=g('#q');i.focus();i.setSelectionRange(pos,pos)});
+ g('#wq')&&(g('#wq').oninput=e=>{st.wq=e.target.value;const pos=e.target.selectionStart;render();const i=g('#wq');i.focus();i.setSelectionRange(pos,pos)});
+ document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{st.filter=b.dataset.f;render()});
+ document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{st.sel=b.dataset.open;st.wq='';go('workbench')});
+ document.querySelectorAll('[data-sel]').forEach(b=>b.onclick=()=>{st.sel=b.dataset.sel;render()});
+ g('#add')&&(g('#add').onclick=()=>$('#dlg').showModal());
+ g('#dna')&&(g('#dna').onclick=()=>{const p=P.find(x=>x.id===st.sel);if(p.dna<100){p.dna=Math.min(100,p.dna+15);if(p.dna>=100)hist.unshift({a:'DNA Analysis Complete',ic:'🧬',s:p.sci,st:'Identified',d:now()});else hist.unshift({a:'DNA Analysis Started',ic:'🧬',s:p.sci,st:'In Progress',d:now()});render()}});
+ g('#exp')&&(g('#exp').onclick=()=>toast('Record exported (prototype)'));
+ g('#chg')&&(g('#chg').onclick=()=>g('#wfile').click());
+ g('#wfile')&&(g('#wfile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const im=await shrink(f),p=P.find(x=>x.id===st.sel);p.img=im.url;save();render();toast('Photo updated')}catch(x){toast('Could not read image')}});
+}
+document.querySelectorAll('nav [data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+$('#dNo').onclick=()=>$('#dlg').close();
+$('#dOk').onclick=async()=>{const s=$('#nSci').value.trim();if(!s){toast('Enter a scientific name');return}
+ let img='https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=800&auto=format&fit=crop';const f=$('#nImg').files[0];if(f){try{img=(await shrink(f)).url}catch(x){toast('Photo skipped: could not read it')}}
+ P.push({id:'n'+Date.now(),sci:s,com:'Unnamed',fam:$('#nFam').value.trim()||'Unknown',hab:$('#nHab').value,date:'Nov 2026',img,leaf:'—',habit:'Not recorded',dna:0,ev:'Not yet reviewed',note:'Add field notes and expert verification.',t:[24,60,60],logged:1});
+ hist.unshift({a:'Added to Collection',ic:'➕',s:s,st:'Cataloged',d:now()});$('#dlg').close();$('#nSci').value='';$('#nFam').value='';$('#nImg').value='';save();toast('Specimen added');render()};
+try{const d=JSON.parse(localStorage.getItem('bfa')||'null');if(d){(d.u||[]).forEach(p=>P.push(p));P.forEach(p=>{if(d.im&&d.im[p.id]){p.img=d.im[p.id]}if(d.lg&&d.lg[p.id])p.logged=1});if(d.h&&d.h.length)hist.splice(0,hist.length,...d.h)}}catch(e){}
+const h=location.hash.slice(1);if(['scan','herbarium','workbench','history'].includes(h))st.tab=h;
+render();
+</script>
+</body>
+</html>
